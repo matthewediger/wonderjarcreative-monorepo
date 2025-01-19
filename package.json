@@ -1,0 +1,8 @@
+{
+  "name": "wonderjarcreative-monorepo",
+  "version": "1.0.0",
+  "description": "A monorepo with a Next.js frontend and a WordPress backend",
+  "keywords": ["nextjs", "wordpress", "monorepo"],
+  "author": "",
+  "license": "MIT"
+}
