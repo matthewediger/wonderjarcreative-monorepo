@@ -7,6 +7,7 @@ export const ContentInfoQuery = gql`
       databaseId
       status
       uri
+      isFrontPage
     }
   }
 `;

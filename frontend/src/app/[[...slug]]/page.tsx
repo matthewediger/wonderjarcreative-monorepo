@@ -59,10 +59,16 @@ export default async function Page({ params }: Props) {
     },
   );
 
+  console.log(print(ContentInfoQuery));
+  // console.log(contentNode);
+
   if (!contentNode) return notFound();
 
   switch (contentNode.contentTypeName) {
     case "page":
+      if (contentNode.isFrontPage) {
+        return <PageTemplate node={contentNode} />;
+      }
       return <PageTemplate node={contentNode} />;
     case "post":
       return <PostTemplate node={contentNode} />;
