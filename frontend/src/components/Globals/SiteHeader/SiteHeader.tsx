@@ -1,4 +1,3 @@
-import Logo from "@/components/Globals/Logo/Logo";
 import Navigation from "@/components/Globals/Navigation/Navigation";
 
 export default function SiteHeader() {
