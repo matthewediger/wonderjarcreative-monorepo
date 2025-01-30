@@ -1,10 +1,12 @@
 import Link from "next/link";
+import Image from "next/image";
+import logoPic from "@/public/logo.png";
 
 export default function Logo() {
     return (
-        <div className="logo">
+        <div className="">
             <Link href="/">
-                <img src="/logo.png" alt="logo" />
+                <Image src={logoPic} alt="Site logo" />
             </Link>
         </div>
     )
