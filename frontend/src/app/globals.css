@@ -8,5 +8,14 @@
 }
 
 body {
-  font-family: 'Nunito', sans-serif;
+}
+
+h1 {
+  font-family: var(--caveat);
+}
+
+h2,
+h3 {
+  font-family: var(--roboto);
+  font-weight: 900;
 }

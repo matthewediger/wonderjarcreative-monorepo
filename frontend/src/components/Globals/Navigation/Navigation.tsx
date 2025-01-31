@@ -51,7 +51,7 @@ export default async function Navigation() {
             key={index}
             target={item.target || "_self"}
           >
-            <span itemProp="name">{item.label}</span>
+            <span itemProp="name" className="font-black uppercase">{item.label}</span>
           </Link>
         );
       })}

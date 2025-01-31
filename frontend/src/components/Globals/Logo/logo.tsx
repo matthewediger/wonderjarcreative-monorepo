@@ -1,13 +1,10 @@
 import Link from "next/link";
-import Image from "next/image";
-import logoPic from "@/public/logo.png";
+import Logo from "@/public/logo.svg";
 
-export default function Logo() {
+export default function LogoAndLink() {
     return (
-        <div className="logo mr-2.5 py-2">
-            <Link href="/">
-                <Image src={logoPic} alt="Site logo" className="w-48 md:w-52 lg:w-56" />
-            </Link>
-        </div>
+        <Link href="/">
+            <Logo aria-label="Logo" className="w-full" />
+        </Link>
     )
 }
