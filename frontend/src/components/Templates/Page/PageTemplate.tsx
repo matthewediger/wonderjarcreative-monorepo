@@ -12,5 +12,15 @@ export default async function PageTemplate({ node }: TemplateProps) {
     id: node.databaseId,
   });
 
-  return <div dangerouslySetInnerHTML={{ __html: page?.content || "" }} />;
+  return (
+    <main className="container mx-auto py-8 md:py-12">
+      <header className="mb-8">
+        <h1 className="text-3xl md:text-4xl lg:text-6xl">{page.title}</h1>
+      </header>
+      <div
+        className="entry-content"
+        dangerouslySetInnerHTML={{ __html: page.content }}
+      ></div>
+    </main>
+  );
 }
