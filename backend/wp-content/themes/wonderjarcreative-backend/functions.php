@@ -5,14 +5,18 @@
  * @since 1.0.0
  */
 
+add_action('after_setup_theme', 'wjc_setup');
+function wjc_setup() {
+  add_theme_support('post-thumbnails');
+}
+
 /**
  * Registers new menus
  *
  * @return void
  */
-add_action('init', 'register_new_menu');
-function register_new_menu()
-{
+add_action('init', 'wjc_register_new_menu');
+function wjc_register_new_menu() {
   register_nav_menus(
     array(
       'primary-menu' => __('Primary menu')
@@ -26,9 +30,8 @@ function register_new_menu()
  * @param string $url The complete URL including scheme and path.
  * @return string The REST API root URL.
  */
-add_filter('rest_url', 'home_url_as_api_url');
-function home_url_as_api_url($url)
-{
+add_filter('rest_url', 'wjc_home_url_as_api_url');
+function wjc_home_url_as_api_url($url) {
   $url = str_replace(home_url(), site_url(), $url);
   return $url;
 }
@@ -42,42 +45,33 @@ function home_url_as_api_url($url)
  * @param WP_Post $post Current post object.
  * @return string Modified headless preview link.
  */
-add_filter( 'preview_post_link', 'set_headless_preview_link', 10, 2 );
-function set_headless_preview_link( string $link, WP_Post $post ): string {
-	// Set the front-end preview route.
+add_filter('preview_post_link', 'wjc_set_headless_preview_link', 10, 2);
+function wjc_set_headless_preview_link(string $link, WP_Post $post): string {
   $frontendUrl = HEADLESS_URL;
 
-	// Update the preview link in WordPress.
   return add_query_arg(
     [
       'secret' => HEADLESS_SECRET,
       'id' => $post->ID,
     ],
-    esc_url_raw( esc_url_raw( "$frontendUrl/api/preview" ))
+    esc_url_raw("$frontendUrl/api/preview")
   );
 }
 
-add_filter( 'rest_prepare_page', 'set_headless_rest_preview_link', 10, 2 );
-add_filter( 'rest_prepare_post', 'set_headless_rest_preview_link' , 10, 2 );
-function set_headless_rest_preview_link( WP_REST_Response $response, WP_Post $post ): WP_REST_Response {
-  // Check if the post status is 'draft' and set the preview link accordingly.
-  if ( 'draft' === $post->post_status ) {
-    $response->data['link'] = get_preview_post_link( $post );
+add_filter('rest_prepare_page', 'wjc_set_headless_rest_preview_link', 10, 2);
+add_filter('rest_prepare_post', 'wjc_set_headless_rest_preview_link', 10, 2);
+function wjc_set_headless_rest_preview_link(WP_REST_Response $response, WP_Post $post): WP_REST_Response {
+  if ('draft' === $post->post_status) {
+    $response->data['link'] = get_preview_post_link($post);
     return $response;
   }
 
-  // For published posts, modify the permalink to point to the frontend.
-  if ( 'publish' === $post->post_status ) {
+  if ('publish' === $post->post_status) {
+    $permalink = get_permalink($post);
 
-    // Get the post permalink.
-    $permalink = get_permalink( $post );
-
-    // Check if the permalink contains the site URL.
-    if ( false !== stristr( $permalink, get_site_url() ) ) {
-
+    if (false !== stristr($permalink, get_site_url())) {
       $frontendUrl = HEADLESS_URL;
 
-      // Replace the site URL with the frontend URL.
       $response->data['link'] = str_ireplace(
         get_site_url(),
         $frontendUrl,
@@ -89,7 +83,6 @@ function set_headless_rest_preview_link( WP_REST_Response $response, WP_Post $po
   return $response;
 }
 
-
 /**
  * Adds the headless_revalidate function to the save_post action hook.
  * This function makes a PUT request to the headless site' api/revalidate endpoint with JSON body: paths = ['/path/to/page', '/path/to/another/page']
@@ -98,15 +91,13 @@ function set_headless_rest_preview_link( WP_REST_Response $response, WP_Post $po
  * @param int $post_ID The ID of the post being saved.
  * @return void
  */
-add_action('transition_post_status', 'headless_revalidate', 10, 3);
-function headless_revalidate(string $new_status, string $old_status, object $post ): void
-{
-  if ( ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) || ( defined( 'DOING_CRON' ) && DOING_CRON ) ) {
+add_action('transition_post_status', 'wjc_headless_revalidate', 10, 3);
+function wjc_headless_revalidate(string $new_status, string $old_status, object $post): void {
+  if ((defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) || (defined('DOING_CRON') && DOING_CRON)) {
     return;
   }
 
-  // Ignore drafts and inherited posts.
-  if ( ( 'draft' === $new_status && 'draft' === $old_status ) || 'inherit' === $new_status ) {
+  if (('draft' === $new_status && 'draft' === $old_status) || 'inherit' === $new_status) {
     return;
   }
 
@@ -114,35 +105,27 @@ function headless_revalidate(string $new_status, string $old_status, object $pos
   $headlessSecret = HEADLESS_SECRET;
 
   $data = json_encode([
-    'tags'  => ['wordpress'],
+    'tags' => ['wordpress'],
   ]);
 
   $response = wp_remote_request("$frontendUrl/api/revalidate/", [
-    'method'  => 'PUT',
-    'body'    => $data,
+    'method' => 'PUT',
+    'body' => $data,
     'headers' => [
       'X-Headless-Secret-Key' => $headlessSecret,
-      'Content-Type'  => 'application/json',
+      'Content-Type' => 'application/json',
     ],
   ]);
 
-  // Check if the request was successful
   if (is_wp_error($response)) {
-    // Handle error
     error_log($response->get_error_message());
   }
 }
 
-function wsra_get_user_inputs()
-{
+function wjc_get_user_inputs() {
   $pageNo = sprintf("%d", $_GET['pageNo']);
   $perPage = sprintf("%d", $_GET['perPage']);
-  // Check for array key taxonomyType
-  if (array_key_exists('taxonomyType', $_GET)) {
-    $taxonomy = $_GET['taxonomyType'];
-  } else {
-    $taxonomy = 'category';
-  }
+  $taxonomy = array_key_exists('taxonomyType', $_GET) ? $_GET['taxonomyType'] : 'category';
   $postType = $_GET['postType'];
   $paged = $pageNo ? $pageNo : 1;
   $perPage = $perPage ? $perPage : 100;
@@ -160,11 +143,10 @@ function wsra_get_user_inputs()
   return [$args, $postArgs, $taxonomy];
 }
 
-function wsra_generate_author_api()
-{
-  [$args] = wsra_get_user_inputs();
+function wjc_generate_author_api() {
+  [$args] = wjc_get_user_inputs();
   $author_urls = array();
-  $authors =  get_users($args);
+  $authors = get_users($args);
   foreach ($authors as $author) {
     $fullUrl = esc_url(get_author_posts_url($author->ID));
     $url = str_replace(home_url(), '', $fullUrl);
@@ -176,9 +158,8 @@ function wsra_generate_author_api()
   return array_merge($author_urls);
 }
 
-function wsra_generate_taxonomy_api()
-{
-  [$args,, $taxonomy] = wsra_get_user_inputs();
+function wjc_generate_taxonomy_api() {
+  [$args,, $taxonomy] = wjc_get_user_inputs();
   $taxonomy_urls = array();
   $taxonomys = $taxonomy == 'tag' ? get_tags($args) : get_categories($args);
   foreach ($taxonomys as $taxonomy) {
@@ -192,9 +173,8 @@ function wsra_generate_taxonomy_api()
   return array_merge($taxonomy_urls);
 }
 
-function wsra_generate_posts_api()
-{
-  [, $postArgs] = wsra_get_user_inputs();
+function wjc_generate_posts_api() {
+  [, $postArgs] = wjc_get_user_inputs();
   $postUrls = array();
   $query = new WP_Query($postArgs);
 
@@ -211,8 +191,7 @@ function wsra_generate_posts_api()
   return array_merge($postUrls);
 }
 
-function wsra_generate_totalpages_api()
-{
+function wjc_generate_totalpages_api() {
   $args = array(
     'exclude_from_search' => false
   );
@@ -238,24 +217,24 @@ function wsra_generate_totalpages_api()
 add_action('rest_api_init', function () {
   register_rest_route('sitemap/v1', '/posts', array(
     'methods' => 'GET',
-    'callback' => 'wsra_generate_posts_api',
+    'callback' => 'wjc_generate_posts_api',
   ));
 });
 add_action('rest_api_init', function () {
   register_rest_route('sitemap/v1', '/taxonomy', array(
     'methods' => 'GET',
-    'callback' => 'wsra_generate_taxonomy_api',
+    'callback' => 'wjc_generate_taxonomy_api',
   ));
 });
 add_action('rest_api_init', function () {
   register_rest_route('sitemap/v1', '/author', array(
     'methods' => 'GET',
-    'callback' => 'wsra_generate_author_api',
+    'callback' => 'wjc_generate_author_api',
   ));
 });
 add_action('rest_api_init', function () {
   register_rest_route('sitemap/v1', '/totalpages', array(
     'methods' => 'GET',
-    'callback' => 'wsra_generate_totalpages_api',
+    'callback' => 'wjc_generate_totalpages_api',
   ));
 });
