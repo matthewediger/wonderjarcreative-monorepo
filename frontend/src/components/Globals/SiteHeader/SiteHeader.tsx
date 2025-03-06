@@ -4,7 +4,7 @@ import Navigation from "@/components/Globals/Navigation/Navigation";
 export default function SiteHeader() {
     return (
         <header className="py-2">
-            <div className="px-4 container mx-auto flex justify-between items-center">
+            <div className="container mx-auto px-4 flex justify-between items-center">
                 <Logo />
                 <Navigation />
             </div>
