@@ -59,8 +59,8 @@ export default async function Page({ params }: Props) {
     },
   );
 
-  console.log(print(ContentInfoQuery));
-  // console.log(contentNode);
+  //console.log(print(ContentInfoQuery));
+  console.log(contentNode);
 
   if (!contentNode) return notFound();
 
