@@ -5,6 +5,20 @@ export const PageQuery = gql`
     page(id: $id, idType: DATABASE_ID, asPreview: $preview) {
       title
       content
+      blocks {
+        name
+        originalContent
+        saveContent
+        dynamicContent
+      }
+      blocksJSON
+    },
+    pages {
+      edges {
+        node {
+          blocksJSON
+        }
+      }
     }
   }
 `;
