@@ -1,5 +1,6 @@
 import React from 'react';
 import dynamic from 'next/dynamic';
+import { wpClassesToTailwind } from '@/utils/wpClassesToTailwind';
 
 const getParsedBlocks = (blocksJSON: string) => {
   let parsedBlocks = [];
@@ -14,12 +15,12 @@ const getParsedBlocks = (blocksJSON: string) => {
 export async function getBlockComponents(blocksJSON: string) {
   const parsedBlocks = getParsedBlocks(blocksJSON);
   const Paragraph = dynamic(() => import('@/components/Blocks/Core/Paragraph/Paragraph'));
-  // const Heading = dynamic(() => import('@/components/Blocks/Core/Heading'));
+  const Heading = dynamic(() => import('@/components/Blocks/Core/Heading'));
   // Import other components similarly
 
   const componentMap = {
     'core/paragraph': Paragraph,
-    // 'core/heading': Heading,
+    'core/heading': Heading,
     // Map other components
   };
 
@@ -31,9 +32,13 @@ export async function getBlockComponents(blocksJSON: string) {
       return null;
     }
 
+    if (block.attributes.className) {
+      block.attributes.className = wpClassesToTailwind(block.attributes.className);
+    }
+
     const Component = BlockComponent as React.ComponentType<{ attributes: any; saveContent: string }>;
     const el = React.createElement(Component, {
-      key: `${block.name}-${index}`, // Add a unique key prop
+      key: `${block.name}-${index}`,
       attributes: block.attributes,
       saveContent: block.saveContent,
     });
