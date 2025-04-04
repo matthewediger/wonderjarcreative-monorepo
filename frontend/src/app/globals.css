@@ -3,6 +3,7 @@
 :root {
   --background: #ffffff; /* Set your desired background color */
   --foreground: #000000; /* Set your desired foreground color */
+  --align-default-width: 850px;
 }
 
 body {
@@ -16,4 +17,10 @@ h2,
 h3 {
   font-family: var(--roboto);
   font-weight: 900;
+}
+
+.entry-content > * {
+  margin-right: auto;
+  margin-left: auto;
+  max-width: var(--align-default-width);
 }
