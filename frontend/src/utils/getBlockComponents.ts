@@ -14,14 +14,10 @@ const getParsedBlocks = (blocksJSON: string) => {
 
 export async function getBlockComponents(blocksJSON: string) {
   const parsedBlocks = getParsedBlocks(blocksJSON);
-  const Paragraph = dynamic(() => import('@/components/Blocks/Core/Paragraph/Paragraph'));
-  const Heading = dynamic(() => import('@/components/Blocks/Core/Heading'));
-  // Import other components similarly
-
   const componentMap = {
-    'core/paragraph': Paragraph,
-    'core/heading': Heading,
-    // Map other components
+    'core/paragraph': dynamic(() => import('@/components/Blocks/Core/Paragraph/Paragraph')),
+    'core/heading': dynamic(() => import('@/components/Blocks/Core/Heading/Heading')),
+    // 'core/image': dynamic(() => import('@/components/Blocks/Core/Image/Image')),
   };
 
   return parsedBlocks.map((block: { name: keyof typeof componentMap; attributes: any; saveContent: string }, index: number) => {
