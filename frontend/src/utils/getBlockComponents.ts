@@ -25,7 +25,7 @@ export async function getBlockComponents(blocksJSON: string) {
 
   const blockArray: React.ReactElement[] = [];
 
-  parsedBlocks.map((block: { name: keyof typeof componentMap; attributes: any; saveContent: string }, index: number) => {
+  return parsedBlocks.map((block: { name: keyof typeof componentMap; attributes: any; saveContent: string }, index: number) => {
     const BlockComponent = componentMap[block.name];
 
     if (!BlockComponent) {
@@ -40,8 +40,6 @@ export async function getBlockComponents(blocksJSON: string) {
       saveContent: block.saveContent,
     });
 
-    blockArray.push(el);
+    return el;
   });
-
-  return blockArray;
 }

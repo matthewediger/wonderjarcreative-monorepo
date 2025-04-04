@@ -7,7 +7,7 @@ export default function Paragraph(
     <p
       key={key}
       {...(anchor && { id: anchor })}
-      className={`wp-block-paragraph container mx-auto px-4 mb-4 ${className || ""}`}
+      className={`wp-block-paragraph ${className || ""}`}
       dangerouslySetInnerHTML={{ __html: saveContent?.replace(/<p[^>]*>|<\/p>/g, '') || "" }}
     />
   );
