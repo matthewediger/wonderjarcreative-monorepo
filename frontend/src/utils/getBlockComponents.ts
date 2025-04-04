@@ -13,7 +13,7 @@ const getParsedBlocks = (blocksJSON: string) => {
 
 export async function getBlockComponents(blocksJSON: string) {
   const parsedBlocks = getParsedBlocks(blocksJSON);
-  const Paragraph = dynamic(() => import('@/components/Blocks/Core/Paragraph'));
+  const Paragraph = dynamic(() => import('@/components/Blocks/Core/Paragraph/Paragraph'));
   // const Heading = dynamic(() => import('@/components/Blocks/Core/Heading'));
   // Import other components similarly
 
@@ -22,8 +22,6 @@ export async function getBlockComponents(blocksJSON: string) {
     // 'core/heading': Heading,
     // Map other components
   };
-
-  const blockArray: React.ReactElement[] = [];
 
   return parsedBlocks.map((block: { name: keyof typeof componentMap; attributes: any; saveContent: string }, index: number) => {
     const BlockComponent = componentMap[block.name];
