@@ -1,6 +1,5 @@
 import React from 'react';
 import dynamic from 'next/dynamic';
-import { Block } from '@/gql/graphql';
 
 const getParsedBlocks = (blocksJSON: string) => {
   let parsedBlocks = [];
