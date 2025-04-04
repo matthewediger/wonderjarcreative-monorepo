@@ -6,21 +6,39 @@
   --align-default-width: 850px;
 }
 
-body {
-}
+@layer base {
+  h1 {
+    font-family: var(--caveat);
+  }
+  
+  h2,
+  h3 {
+    @apply mb-4 font-bold;
+    font-family: var(--roboto);
+  }
 
-h1 {
-  font-family: var(--caveat);
-}
+  h2 {
+    @apply text-2xl;
+  }
 
-h2,
-h3 {
-  font-family: var(--roboto);
-  font-weight: 900;
-}
+  h3 {
+    @apply text-xl;
+  }
 
-.entry-content > * {
-  margin-right: auto;
-  margin-left: auto;
-  max-width: var(--align-default-width);
+  h4 {
+    @apply text-lg;
+  }
+
+  a {
+    @apply no-underline;
+    color: var(--foreground);
+  }
+
+  a:hover {
+    @apply underline;
+  }
+
+  .entry-content > * {
+    @apply mx-auto max-width-[var(--align-default-width)];
+  }
 }
