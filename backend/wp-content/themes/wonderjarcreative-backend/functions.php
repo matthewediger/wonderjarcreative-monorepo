@@ -5,15 +5,20 @@
  * @since 1.0.0
  */
 
+/**
+ * Setup.
+ * 
+ * Sets up theme defaults and registers support for various WordPress features.
+ */
 add_action('after_setup_theme', 'wjc_setup');
 function wjc_setup() {
   add_theme_support('post-thumbnails');
 }
 
 /**
- * Registers new menus
- *
- * @return void
+ * Register new menu.
+ * 
+ * Registers a new menu location for the theme.
  */
 add_action('init', 'wjc_register_new_menu');
 function wjc_register_new_menu() {
@@ -25,6 +30,8 @@ function wjc_register_new_menu() {
 }
 
 /**
+ * Home URL as API URL.
+ * 
  * Changes the REST API root URL to use the home URL as the base.
  *
  * @param string $url The complete URL including scheme and path.
@@ -58,6 +65,16 @@ function wjc_set_headless_preview_link(string $link, WP_Post $post): string {
   );
 }
 
+/**
+ * Customize the REST API response for posts and pages.
+ *
+ * This function modifies the REST API response to include a custom preview link
+ * for draft posts and a modified permalink for published posts.
+ *
+ * @param WP_REST_Response $response The REST API response object.
+ * @param WP_Post         $post     The current post object.
+ * @return WP_REST_Response The modified REST API response object.
+ */
 add_filter('rest_prepare_page', 'wjc_set_headless_rest_preview_link', 10, 2);
 add_filter('rest_prepare_post', 'wjc_set_headless_rest_preview_link', 10, 2);
 function wjc_set_headless_rest_preview_link(WP_REST_Response $response, WP_Post $post): WP_REST_Response {
@@ -84,6 +101,8 @@ function wjc_set_headless_rest_preview_link(WP_REST_Response $response, WP_Post 
 }
 
 /**
+ * Headless revalidate.
+ * 
  * Adds the headless_revalidate function to the save_post action hook.
  * This function makes a PUT request to the headless site' api/revalidate endpoint with JSON body: paths = ['/path/to/page', '/path/to/another/page']
  * Requires HEADLESS_URL and HEADLESS_SECRET to be defined in wp-config.php
@@ -122,6 +141,11 @@ function wjc_headless_revalidate(string $new_status, string $old_status, object 
   }
 }
 
+/**
+ * Get user inputs.
+ * 
+ * Gets the user inputs from the GET request.
+ */
 function wjc_get_user_inputs() {
   $pageNo = sprintf("%d", $_GET['pageNo']);
   $perPage = sprintf("%d", $_GET['perPage']);
@@ -143,6 +167,11 @@ function wjc_get_user_inputs() {
   return [$args, $postArgs, $taxonomy];
 }
 
+/**
+ * Generate author API.
+ * 
+ * Generates the author API.
+ */
 function wjc_generate_author_api() {
   [$args] = wjc_get_user_inputs();
   $author_urls = array();
@@ -158,6 +187,11 @@ function wjc_generate_author_api() {
   return array_merge($author_urls);
 }
 
+/**
+ * Generate taxonomy API.
+ * 
+ * Generates the taxonomy API.
+ */
 function wjc_generate_taxonomy_api() {
   [$args,, $taxonomy] = wjc_get_user_inputs();
   $taxonomy_urls = array();
@@ -173,6 +207,11 @@ function wjc_generate_taxonomy_api() {
   return array_merge($taxonomy_urls);
 }
 
+/**
+ * Generate posts API.
+ * 
+ * Generates the posts API.
+ */
 function wjc_generate_posts_api() {
   [, $postArgs] = wjc_get_user_inputs();
   $postUrls = array();
@@ -214,27 +253,27 @@ function wjc_generate_totalpages_api() {
   return array_merge($defaultArray, $tempValueHolder);
 }
 
-add_action('rest_api_init', function () {
+/**
+ * Register REST API routes for sitemap.
+ * 
+ * Registers custom REST API routes for generating sitemap data.
+ */
+add_action('rest_api_init', 'wjc_register_sitemap_routes');
+function wjc_register_sitemap_routes() {
   register_rest_route('sitemap/v1', '/posts', array(
     'methods' => 'GET',
     'callback' => 'wjc_generate_posts_api',
   ));
-});
-add_action('rest_api_init', function () {
   register_rest_route('sitemap/v1', '/taxonomy', array(
     'methods' => 'GET',
     'callback' => 'wjc_generate_taxonomy_api',
   ));
-});
-add_action('rest_api_init', function () {
   register_rest_route('sitemap/v1', '/author', array(
     'methods' => 'GET',
     'callback' => 'wjc_generate_author_api',
   ));
-});
-add_action('rest_api_init', function () {
   register_rest_route('sitemap/v1', '/totalpages', array(
     'methods' => 'GET',
     'callback' => 'wjc_generate_totalpages_api',
   ));
-});
+}
