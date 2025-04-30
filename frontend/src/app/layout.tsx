@@ -17,17 +17,16 @@ const caveat = Caveat({
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const { isEnabled } = await draftMode();
-  const bodyClasses = ["bg-gray-200", "text-foreground", roboto.className];
 
   return (
-    <html lang="en">
-      <body
-        className={bodyClasses.join(" ")}
-        style={{
-          '--roboto': roboto.style.fontFamily,
-          '--caveat': caveat.style.fontFamily
-        } as React.CSSProperties}
-      >
+    <html
+      lang="en"
+      style={{
+        '--roboto': roboto.style.fontFamily,
+        '--caveat': caveat.style.fontFamily,
+      } as React.CSSProperties}
+    >
+      <body>
         {isEnabled && <PreviewNotice />}
         <SiteHeader />
         {children}
