@@ -1,44 +1,61 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff; /* Set your desired background color */
-  --foreground: #000000; /* Set your desired foreground color */
-  --align-default-width: 850px;
+@theme {
+  --color-primary: #50C9B4;
+  --color-primary: oklch(0.78 0.13 175); /* Primary Teal */
+  --color-accent: #F2685E;
+  --color-accent: oklch(0.72 0.22 33); /* Warm Coral */
+  --color-error: #C24D53;
+  --color-error: oklch(0.62 0.22 27); /* Muted Brick Red */
+  --color-text-primary: #000000;
+  --color-text-primary: oklch(0 0 0); /* Deep Black */
+  --color-background-accent: #4D7A7F;
+  --color-background-accent: oklch(0.55 0.07 180); /* Retro Teal */
+  --color-background-neutral: #EFE5D5;
+  --color-background-neutral: oklch(0.94 0.03 83); /* Soft Cream */
+  --color-background: #FFFFFF;
+  --color-background: oklch(1 0 0); /* Pure White */
+  --color-text-secondary: #4E5664;
+  --color-text-secondary: oklch(0.38 0.03 257); /* Charcoal Gray */
+  --color-highlight: #EAA221;
+  --color-highlight: oklch(0.78 0.22 85); /* Marigold Yellow */
+  --font-sans: var(--roboto), sans-serif;
+  --font-cursive: var(--caveat), cursive;
+  --font-mono: "Fira Code", monospace;
+  --narrow: min(calc(100% - 2rem), 850px);
+  --wide: min(calc(100% - 2rem), 1280px);
 }
 
+/* Base Layer: Foundational styles */
 @layer base {
+  body {
+    @apply bg-background text-text-primary font-sans;
+  }
+
   h1 {
-    font-family: var(--caveat);
-  }
-  
-  h2,
-  h3 {
-    @apply mb-4 font-bold;
-    font-family: var(--roboto);
+    @apply font-cursive text-4xl font-bold text-primary;
+  }  
+}
+
+/* Components Layer: Reusable UI components */
+@layer components {
+  .entry-content > *:not(.alignfull) {
+    @apply mx-auto max-w-[var(--narrow)];
   }
 
-  h2 {
-    @apply text-2xl;
+  @media screen and (min-width: max-w-wide) {
+    .entry-content > .alignwide {
+      @apply mx-auto max-w-[var(--wide)];
+    }
   }
+}
 
-  h3 {
-    @apply text-xl;
+/* Utilities Layer: Custom utility classes */
+@layer utilities {
+  /* .text-shadow {
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
   }
-
-  h4 {
-    @apply text-lg;
-  }
-
-  a {
-    @apply no-underline;
-    color: var(--foreground);
-  }
-
-  a:hover {
-    @apply underline;
-  }
-
-  .entry-content > * {
-    @apply mx-auto max-width-[var(--align-default-width)];
-  }
+  .bg-gradient-primary {
+    background: linear-gradient(to right, var(--color-primary), var(--color-background-accent));
+  } */
 }
