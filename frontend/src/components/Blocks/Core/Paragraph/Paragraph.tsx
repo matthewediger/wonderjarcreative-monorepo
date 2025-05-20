@@ -1,8 +1,8 @@
 export default function Paragraph(
-  { key, className, attributes, originalContent, innerBlocks }: 
-  { key: any, className: string, attributes: { anchor?: string, OGclassName?: string }; originalContent?: string, innerBlocks?: any[] | null },
+  { key, attributes, originalContent, innerBlocks }: 
+  { key: any, attributes: { anchor?: string, className?: string }; originalContent?: string, innerBlocks?: any[] | null },
 ) {
-  const { anchor, OGclassName } = attributes;
+  const { anchor, className } = attributes;
   return (
     <p
       key={key}
