@@ -1,14 +1,15 @@
 export default function Paragraph(
-  { key, attributes, saveContent }: 
-  { key: any, attributes: { anchor?: string, className?: string }; saveContent?: string },
+  { key, className, attributes, originalContent, innerBlocks }: 
+  { key: any, className: string, attributes: { anchor?: string, OGclassName?: string }; originalContent?: string, innerBlocks?: any[] | null },
 ) {
-  const { anchor, className } = attributes;
+  const { anchor, OGclassName } = attributes;
   return (
     <p
       key={key}
       {...(anchor && { id: anchor })}
-      className={`wp-block-paragraph mb-4 ${className || ""}`}
-      dangerouslySetInnerHTML={{ __html: saveContent?.replace(/<p[^>]*>|<\/p>/g, '') || "" }}
-    />
+      className={`wp-block-paragraph ${className || ""}`}
+    >
+      { originalContent?.replace(/<p[^>]*>|<\/p>/g, '') || "" }
+    </p>
   );
 }
