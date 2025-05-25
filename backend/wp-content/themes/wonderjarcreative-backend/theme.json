@@ -9,8 +9,8 @@
       "defaultPalette": false,
       "palette": [
         {
-          "slug": "primary-teal",
-          "name": "Primary Teal",
+          "slug": "teal",
+          "name": "Teal",
           "color": "#50C9B4"
         },
         {
